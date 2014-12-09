@@ -8,7 +8,7 @@ import sendgrid
 import message
 from sendgrid import SendGridClientError, SendGridServerError
 from urllib2 import URLError
-
+import os
 
 
 class Tests:
@@ -24,6 +24,7 @@ class Tests:
     #message = sendgrid.Mail()
     
     def __init__(self):
+        self.script_dir = os.path.dirname(__file__)
         self.sg_username = "hoanga"
         self.sg_password = "emails4ever"
         
@@ -42,7 +43,7 @@ class Tests:
     #message.add_to("alexhoangd@yahoo.com")
     
     def send_email(self):
-        print "Running Scenario 1..."
+        print "Running Scenario 1 (send email with all fields filled)..."
         msg = message.Mail()
         msg.set_from(self.from_address)
         msg.set_from_name("Alex Hoang - Gmail")
@@ -73,7 +74,7 @@ class Tests:
 
 
     def send_email_with_cc(self):
-        print "Running Scenario 2..."
+        print "Running Scenario 2 (send email with cc)..."
         msg = message.Mail()
         msg.set_from(self.from_address)
         msg.set_subject("sendgrid test")
@@ -101,7 +102,7 @@ class Tests:
             
     
     def send_email_with_attachment(self):
-        print "Running Scenario 3..."
+        print "Running Scenario 3 (successfully send email with attachment)..."
         msg = message.Mail()
         msg.set_from(self.from_address)
         msg.set_subject("sendgrid test")
@@ -109,7 +110,7 @@ class Tests:
         msg.set_html("<table style=\"border: solid 1px #000; background-color: #666; font-family: verdana, tahoma, sans-serif; color: #fff;\"> <tr> <td> <h2>Hello,</h2> <p>This is a test message from SendGrid.    We have sent this to you because you requested a test message be sent from your account.</p> <a href=\"http://www.google.com\" target=\"_blank\">This is a link to google.com</a> <p> <a href=\"http://www.apple.com\" target=\"_blank\">This is a link to apple.com</a> <p> <a href=\"http://www.sendgrid.com\" target=\"_blank\">This is a link to sendgrid.com</a> </p> <p>Thank you for reading this test message.</p> Love,<br/> Your friends at SendGrid</p> <p> <img src=\"http://cdn1.sendgrid.com/images/sendgrid-logo.png\" alt=\"SendGrid!\" /> </td> </tr> </table>")
         msg.add_to(self.to_address)
         
-        msg.add_attachment("declaration_of_independence.pdf", "../us_doi.pdf")
+        msg.add_attachment("declaration_of_independence.pdf", self.script_dir + "/../us_doi.pdf")
      
         # SEND THE MESSAGE
         #========================================================#
@@ -128,7 +129,7 @@ class Tests:
     
     
     def send_email_with_attachment_too_large(self):
-        print "Running Scenario 4..."
+        print "Running Scenario 4 (send email that exceeds size limit and catch error)..."
         msg = message.Mail()
         msg.set_from(self.from_address)
         msg.set_subject("sendgrid test")
@@ -137,7 +138,7 @@ class Tests:
         msg.add_to(self.to_address)
         
         #adding 15 MB file
-        msg.add_attachment("italy_guidebook.pdf", "../italy_guidebook.pdf")
+        msg.add_attachment("italy_guidebook.pdf", self.script_dir + "/../italy_guidebook.pdf")
         
         
         # SEND THE MESSAGE
@@ -149,6 +150,7 @@ class Tests:
             print return_msg
         except URLError as e:
             print "URL error encountered: " + str(e.args) 
+            print "email with 15 MB attachment failed as expected"
             print "Scenario 4 passed"
         except SendGridClientError:
             print "client error"
