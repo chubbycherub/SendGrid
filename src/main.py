@@ -24,7 +24,8 @@ class Tests:
     #message = sendgrid.Mail()
     
     def __init__(self):
-        self.script_dir = os.path.dirname(__file__)
+        self.script_dir = os.path.dirname(os.path.abspath(__file__))
+        
         self.sg_username = "hoanga"
         self.sg_password = "emails4ever"
         
